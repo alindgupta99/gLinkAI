@@ -130,6 +130,11 @@ app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// ── Serve main site ─────────────────────────────────────────────────────────
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // ── Local dev: listen on port ───────────────────────────────────────────────
 if (require.main === module) {
   db.initDB().then(() => {
