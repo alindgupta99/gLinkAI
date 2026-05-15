@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glink.ai — AI-Powered Digital Growth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #05060f;
+      --surface: #0d0f1e;
+      --surface2: #131627;
+      --border: rgba(255,255,255,0.07);
+      --accent: #6c63ff;
+      --accent2: #00d4ff;
+      --accent3: #ff6584;
+      --gradient: linear-gradient(135deg, #6c63ff 0%, #00d4ff 100%);
+      --text: #f0f0f8;
+      --muted: #8b8fa8;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ─── NOISE TEXTURE ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 18px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(5,6,15,0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { opacity: 0.6; }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--gradient);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 6% 80px;
+      overflow: hidden;
+    }
+
+    /* Animated grid */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    /* Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(108,99,255,0.25), transparent 70%);
+      top: -100px; left: -100px;
+      animation: drift1 12s ease-in-out infinite alternate;
+    }
+
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,212,255,0.2), transparent 70%);
+      bottom: 0; right: -50px;
+      animation: drift2 10s ease-in-out infinite alternate;
+    }
+
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255,101,132,0.15), transparent 70%);
+      top: 50%; left: 60%;
+      animation: drift3 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift1 { to { transform: translate(40px, 60px); } }
+    @keyframes drift2 { to { transform: translate(-40px, -50px); } }
+    @keyframes drift3 { to { transform: translate(-60px, 40px); } }
+
+    .hero-content { position: relative; z-index: 2; max-width: 860px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(108,99,255,0.12);
+      border: 1px solid rgba(108,99,255,0.3);
+      color: #a89fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 50px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--accent2);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(108,99,255,0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(108,99,255,0.5);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s, background 0.2s;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(108,99,255,0.08);
+    }
+
+    /* Stat bar below hero */
+    .hero-stats {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-top: 72px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat { text-align: center; }
+
+    .hero-stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ─── SECTION COMMON ─── */
+    section { padding: 100px 6%; position: relative; }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+      line-height: 1.75;
+    }
+
+    .section-header { margin-bottom: 60px; }
+    .text-center { text-align: center; }
+    .text-center .section-sub { margin: 0 auto; }
+
+    /* ─── MARQUEE ─── */
+    .marquee-section {
+      padding: 32px 0;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 60px;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-track:hover { animation-play-state: paused; }
+
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+    }
+
+    .marquee-icon { font-size: 1.1rem; }
+
+    /* ─── SERVICES ─── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: default;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
+      border-radius: var(--radius);
+    }
+
+    .service-card:hover {
+      border-color: rgba(108,99,255,0.4);
+      transform: translateY(-4px);
+    }
+
+    .service-card:hover::before { opacity: 0.04; }
+
+    .service-icon {
+      width: 52px; height: 52px;
+      background: rgba(108,99,255,0.1);
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .service-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .service-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    .service-tag {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent2);
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.15);
+      padding: 4px 10px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── INDUSTRIES ─── */
+    .industries { background: var(--surface); }
+
+    .industry-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .industry-tab {
+      padding: 10px 22px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .industry-tab.active, .industry-tab:hover {
+      background: var(--gradient);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .industry-panel { display: none; }
+    .industry-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+
+    .industry-content h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 14px;
+    }
+
+    .industry-content p { color: var(--muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 24px; }
+
+    .industry-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+    .industry-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .feature-check {
+      width: 20px; height: 20px;
+      background: rgba(108,99,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--accent2);
+      flex-shrink: 0;
+    }
+
+    .industry-visual {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .industry-visual::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(108,99,255,0.2), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .mock-browser {
+      background: #0a0b18;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .mock-browser-bar {
+      background: #111220;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mock-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .mock-dot:nth-child(1) { background: #ff5f57; }
+    .mock-dot:nth-child(2) { background: #febc2e; }
+    .mock-dot:nth-child(3) { background: #28c840; }
+
+    .mock-url {
+      flex: 1;
+      background: #1a1c2e;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-left: 8px;
+    }
+
+    .mock-content { padding: 24px; }
+
+    .mock-hero-block {
+      background: var(--gradient);
+      border-radius: 8px;
+      height: 80px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .mock-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .mock-card {
+      background: var(--surface2);
+      border-radius: 6px;
+      height: 48px;
+      border: 1px solid var(--border);
+    }
+
+    .mock-stat-row { display: flex; gap: 8px; }
+    .mock-stat { flex: 1; background: rgba(108,99,255,0.1); border-radius: 6px; height: 36px; border: 1px solid rgba(108,99,255,0.2); }
+
+    /* ─── AI POWER SECTION ─── */
+    .ai-section { position: relative; overflow: hidden; }
+
+    .ai-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(108,99,255,0.08), transparent 60%);
+      pointer-events: none;
+    }
+
+    .ai-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .ai-terminal {
+      background: #080910;
+      border: 1px solid rgba(108,99,255,0.25);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(108,99,255,0.12), 0 0 120px rgba(108,99,255,0.06);
+    }
+
+    .terminal-bar {
+      background: #0f1020;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-dot:nth-child(1) { background: #ff5f57; }
+    .terminal-dot:nth-child(2) { background: #febc2e; }
+    .terminal-dot:nth-child(3) { background: #28c840; }
+
+    .terminal-title {
+      margin-left: 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .terminal-body { padding: 24px; font-family: 'Courier New', monospace; font-size: 0.82rem; line-height: 2; }
+
+    .t-comment { color: #4a5568; }
+    .t-accent { color: #6c63ff; }
+    .t-string { color: #68d391; }
+    .t-value { color: #00d4ff; }
+    .t-keyword { color: #f6ad55; }
+    .t-white { color: #e2e8f0; }
+
+    .cursor {
+      display: inline-block;
+      width: 8px; height: 14px;
+      background: var(--accent2);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .ai-features { display: flex; flex-direction: column; gap: 32px; }
+
+    .ai-feature { display: flex; gap: 20px; }
+
+    .ai-feature-icon {
+      width: 48px; height: 48px;
+      background: rgba(108,99,255,0.1);
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .ai-feature-text h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .ai-feature-text p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+
+    /* ─── PROCESS ─── */
+    .process { background: var(--surface); }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      position: relative;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(108,99,255,0.4), transparent);
+    }
+
+    .process-step {
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .step-number {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 30px rgba(108,99,255,0.3);
+    }
+
+    .process-step h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .process-step p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; }
+
+    /* ─── PRICING ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      position: relative;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .pricing-card:hover { transform: translateY(-4px); }
+
+    .pricing-card.featured {
+      border-color: rgba(108,99,255,0.5);
+      background: linear-gradient(135deg, rgba(108,99,255,0.08), rgba(0,212,255,0.04));
+    }
+
+    .pricing-featured-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .pricing-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .pricing-price {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -1px;
+    }
+
+    .pricing-price span { font-size: 1rem; font-weight: 400; color: var(--muted); }
+
+    .pricing-desc { font-size: 0.875rem; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .pricing-features li .check { color: var(--accent2); font-size: 0.9rem; }
+
+    .pricing-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .pricing-btn.outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .pricing-btn.outline:hover {
+      border-color: var(--accent);
+      background: rgba(108,99,255,0.08);
+    }
+
+    .pricing-btn.filled {
+      background: var(--gradient);
+      border: none;
+      color: #fff;
+      box-shadow: 0 0 24px rgba(108,99,255,0.3);
+    }
+
+    .pricing-btn.filled:hover { opacity: 0.9; box-shadow: 0 0 36px rgba(108,99,255,0.45); }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials { background: var(--surface); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .testimonial-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color 0.3s;
+    }
+
+    .testimonial-card:hover { border-color: rgba(108,99,255,0.3); }
+
+    .stars { color: #f6c90e; font-size: 0.9rem; margin-bottom: 16px; letter-spacing: 2px; }
+
+    .testimonial-text {
+      font-size: 0.925rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+
+    .author-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .author-name { font-size: 0.875rem; font-weight: 600; }
+    .author-title { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+    /* ─── CONTACT ─── */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .contact-info h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .contact-info p { color: var(--muted); font-size: 0.95rem; line-height: 1.75; margin-bottom: 32px; }
+
+    .contact-methods { display: flex; flex-direction: column; gap: 16px; }
+
+    .contact-method {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .contact-method:hover {
+      border-color: rgba(108,99,255,0.4);
+      background: rgba(108,99,255,0.04);
+    }
+
+    .contact-method-icon {
+      width: 40px; height: 40px;
+      background: rgba(108,99,255,0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .contact-method-text { flex: 1; }
+    .contact-method-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .contact-method-value { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-top: 2px; }
+
+    /* Form */
+    .contact-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+    }
+
+    .contact-form h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .contact-form p { color: var(--muted); font-size: 0.875rem; margin-bottom: 28px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+    .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.3px; }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .form-group select { appearance: none; cursor: pointer; }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,99,255,0.12);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(139,143,168,0.5); }
+
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--gradient);
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 0 24px rgba(108,99,255,0.3);
+      margin-top: 8px;
+    }
+
+    .form-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .form-success-icon { font-size: 3rem; margin-bottom: 12px; }
+    .form-success h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .form-success p { color: var(--muted); font-size: 0.875rem; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 6% 36px;
+      background: var(--surface);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .footer-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .footer-social { display: flex; gap: 12px; }
+
+    .social-link {
+      width: 38px; height: 38px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .social-link:hover { border-color: var(--accent); color: var(--text); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ─── FLOATING WHATSAPP ─── */
+    .wa-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 56px; height: 56px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      text-decoration: none;
+      z-index: 99;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s;
+      animation: float-bob 3s ease-in-out infinite;
+    }
+
+    .wa-float:hover { transform: scale(1.1); }
+
+    @keyframes float-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+    .stagger-5 { transition-delay: 0.5s; }
+    .stagger-6 { transition-delay: 0.6s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .ai-grid { grid-template-columns: 1fr; }
+      .ai-terminal { order: -1; }
+
+      .industry-panel.active { grid-template-columns: 1fr; }
+
+      .contact-wrapper { grid-template-columns: 1fr; }
+
+      .process-steps::before { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      section { padding: 70px 5%; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-stats { gap: 36px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .contact-form { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo">Glink<span>.</span>ai</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#industries">Industries</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get Started →</a>
+  <div class="hamburger" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div style="position:relative;z-index:2;width:100%">
+    <div class="hero-content" style="margin:0 auto">
+      <div class="badge"><div class="badge-dot"></div>AI-Powered Digital Agency</div>
+
+      <h1>
+        Your Business, <br/>
+        <span class="gradient-text">Powered by AI.</span><br/>
+        Online in Days.
+      </h1>
+
+      <p>We help independent professionals and small businesses get online, look credible, and automate the repetitive work — starting with a great website and growing from there.</p>
+
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary">Start Your Project ✦</a>
+        <a href="#services" class="btn-secondary">Explore Services →</a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat fade-up">
+        <div class="hero-stat-number">48h</div>
+        <div class="hero-stat-label">Website live in 48 hours</div>
+      </div>
+      <div class="hero-stat fade-up stagger-1">
+        <div class="hero-stat-number">3×</div>
+        <div class="hero-stat-label">More inbound clients</div>
+      </div>
+      <div class="hero-stat fade-up stagger-2">
+        <div class="hero-stat-number">24/7</div>
+        <div class="hero-stat-label">AI handles enquiries</div>
+      </div>
+      <div class="hero-stat fade-up stagger-3">
+        <div class="hero-stat-number">10×</div>
+        <div class="hero-stat-label">Faster than traditional agencies</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-item"><span class="marquee-icon">🌐</span> Website Design</div>
+    <div class="marquee-item"><span class="marquee-icon">🤖</span> AI Chatbot</div>
+    <div class="marquee-item"><span class="marquee-icon">📲</span> WhatsApp Automation</div>
+    <div class="marquee-item"><span class="marquee-icon">🔍</span> Google SEO</div>
+    <div class="marquee-item"><span class="marquee-icon">📝</span> Enquiry Forms</div>
+    <div class="marquee-item"><span class="marquee-icon">📍</span> Google Business Profile</div>
+    <div class="marquee-item"><span class="marquee-icon">⚡</span> Task Automation</div>
+    <div class="marquee-item"><span class="marquee-icon">📱</span> Mobile-First Design</div>
+    <div class="marquee-item"><span class="marquee-icon">🚀</span> Fast Deployment</div>
+    <div class="marquee-item"><span class="marquee-icon">💬</span> AI Query Handling</div>
+    <!-- Duplicate for seamless loop -->
+    <div class="marquee-item"><span class="marquee-icon">🌐</span> Website Design</div>
+    <div class="marquee-item"><span class="marquee-icon">🤖</span> AI Chatbot</div>
+    <div class="marquee-item"><span class="marquee-icon">📲</span> WhatsApp Automation</div>
+    <div class="marquee-item"><span class="marquee-icon">🔍</span> Google SEO</div>
+    <div class="marquee-item"><span class="marquee-icon">📝</span> Enquiry Forms</div>
+    <div class="marquee-item"><span class="marquee-icon">📍</span> Google Business Profile</div>
+    <div class="marquee-item"><span class="marquee-icon">⚡</span> Task Automation</div>
+    <div class="marquee-item"><span class="marquee-icon">📱</span> Mobile-First Design</div>
+    <div class="marquee-item"><span class="marquee-icon">🚀</span> Fast Deployment</div>
+    <div class="marquee-item"><span class="marquee-icon">💬</span> AI Query Handling</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header text-center">
+    <div class="section-label">What We Build</div>
+    <h2 class="section-title">Your Digital Presence, Done Right</h2>
+    <p class="section-sub">We start with the foundations that matter most — a great website and smart automation — then build from there based on what your business actually needs.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card fade-up">
+      <div class="service-icon">🌐</div>
+      <h3>Website Design & Development</h3>
+      <p>A fast, mobile-first website that looks professional and makes it easy for clients to find and contact you. The single most impactful thing you can do online.</p>
+    </div>
+
+    <div class="service-card fade-up stagger-1">
+      <div class="service-icon">🔍</div>
+      <h3>Google SEO & Local Search</h3>
+      <p>Set up so you show up when potential clients search for your service in your city. We handle the technical groundwork and help you rank where it counts.</p>
+    </div>
+
+    <div class="service-card fade-up stagger-2">
+      <div class="service-icon">📍</div>
+      <h3>Google Business Profile</h3>
+      <p>Get your business listed, verified, and optimised on Google Maps so local clients can find your hours, contact details, and reviews in one tap.</p>
+    </div>
+
+    <div class="service-card fade-up stagger-3">
+      <div class="service-icon">💬</div>
+      <h3>WhatsApp Automation</h3>
+      <p>A simple bot that replies to common client messages on WhatsApp — so enquiries don't go unanswered when you're busy or unavailable.</p>
+    </div>
+
+    <div class="service-card fade-up stagger-4">
+      <div class="service-icon">🤖</div>
+      <h3>AI Chatbot (Website)</h3>
+      <p>A lightweight AI assistant embedded on your website that answers FAQs and captures visitor enquiries — turning traffic into actual leads.</p>
+    </div>
+
+    <div class="service-card fade-up stagger-5">
+      <div class="service-icon">✨</div>
+      <h3>More — Let's Talk</h3>
+      <p>Every business is different. Once we understand yours, we can discuss what else makes sense — whether that's booking flows, integrations, or anything in between.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section class="industries" id="industries">
+  <div class="section-header">
+    <div class="section-label">Who We Serve</div>
+    <h2 class="section-title">Any Professional. Any Field.</h2>
+    <p class="section-sub">If you run a practice, a consultancy, or an independent business and you're not getting clients from the internet — we can help. A few examples of who we work with:</p>
+  </div>
+
+  <div class="industry-tabs">
+    <button class="industry-tab active" onclick="showIndustry('doctors', this)">🩺 Healthcare</button>
+    <button class="industry-tab" onclick="showIndustry('realestate', this)">🏠 Real Estate</button>
+    <button class="industry-tab" onclick="showIndustry('finance', this)">📈 Finance & Accounting</button>
+    <button class="industry-tab" onclick="showIndustry('others', this)">✦ Others</button>
+  </div>
+
+  <!-- Doctors -->
+  <div class="industry-panel active" id="panel-doctors">
+    <div class="industry-content">
+      <h3>Doctors & Clinics</h3>
+      <p>Most independent doctors still rely on word-of-mouth and walk-ins. A proper website and a WhatsApp bot that handles common queries can meaningfully change how visible and approachable you are to new patients.</p>
+      <ul class="industry-features">
+        <li><div class="feature-check">✓</div>Professional website with your speciality, credentials, and location</li>
+        <li><div class="feature-check">✓</div>Show up when patients search "your speciality + your city" on Google</li>
+        <li><div class="feature-check">✓</div>WhatsApp bot that replies to common patient questions automatically</li>
+        <li><div class="feature-check">✓</div>Simple enquiry and contact form so patients can reach you easily</li>
+        <li><div class="feature-check">✓</div>Google Maps listing set up and verified</li>
+        <li><div class="feature-check">✓</div>More advanced features available — we'll discuss what makes sense</li>
+      </ul>
+    </div>
+    <div class="industry-visual">
+      <div class="mock-browser">
+        <div class="mock-browser-bar">
+          <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+          <div class="mock-url">dr-sharma-cardiology.com</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-hero-block">🩺 Dr. Sharma — Cardiologist, Delhi</div>
+          <div class="mock-cards">
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+          </div>
+          <div class="mock-stat-row">
+            <div class="mock-stat"></div>
+            <div class="mock-stat"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+        <span style="background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.25);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#a89fff">🌐 Live in 48 hours</span>
+        <span style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#6ce4f5">⭐ Google-verified listing</span>
+        <span style="background:rgba(255,101,132,0.08);border:1px solid rgba(255,101,132,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#ff9fb3">💬 WhatsApp bot active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Real Estate -->
+  <div class="industry-panel" id="panel-realestate">
+    <div class="industry-content">
+      <h3>Real Estate Professionals</h3>
+      <p>Buyers and sellers search online long before they call anyone. A clean website and a bot that responds to property enquiries on WhatsApp means you're in the conversation even when you're not at your desk.</p>
+      <ul class="industry-features">
+        <li><div class="feature-check">✓</div>Professional website showcasing your listings and experience</li>
+        <li><div class="feature-check">✓</div>Show up for "property agent / builder in [city]" searches</li>
+        <li><div class="feature-check">✓</div>WhatsApp bot that handles initial buyer and seller enquiries</li>
+        <li><div class="feature-check">✓</div>Enquiry forms that capture leads directly from your site</li>
+        <li><div class="feature-check">✓</div>Google Business profile set up</li>
+        <li><div class="feature-check">✓</div>Additional features available — let's talk about what fits your workflow</li>
+      </ul>
+    </div>
+    <div class="industry-visual">
+      <div class="mock-browser">
+        <div class="mock-browser-bar">
+          <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+          <div class="mock-url">guptarealty-delhi.com</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-hero-block">🏠 Gupta Realty — Delhi NCR Properties</div>
+          <div class="mock-cards">
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+          </div>
+          <div class="mock-stat-row">
+            <div class="mock-stat"></div>
+            <div class="mock-stat"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+        <span style="background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.25);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#a89fff">🌐 Live in 48 hours</span>
+        <span style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#6ce4f5">💬 Enquiry bot on WhatsApp</span>
+        <span style="background:rgba(255,101,132,0.08);border:1px solid rgba(255,101,132,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#ff9fb3">📍 Google Maps verified</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finance -->
+  <div class="industry-panel" id="panel-finance">
+    <div class="industry-content">
+      <h3>Finance & Accounting Professionals</h3>
+      <p>Trust is everything in finance. A professional website and a clear Google presence tell prospective clients you're legitimate before they've even spoken to you. We make that first impression count.</p>
+      <ul class="industry-features">
+        <li><div class="feature-check">✓</div>Clean, credibility-first website with your services and credentials</li>
+        <li><div class="feature-check">✓</div>Rank for "CA / tax consultant / advisor near me" searches</li>
+        <li><div class="feature-check">✓</div>WhatsApp bot to handle common client queries automatically</li>
+        <li><div class="feature-check">✓</div>Contact and intake forms so clients can reach you without calling</li>
+        <li><div class="feature-check">✓</div>Google Business profile set up and verified</li>
+        <li><div class="feature-check">✓</div>Further automation options available — we'll scope together</li>
+      </ul>
+    </div>
+    <div class="industry-visual">
+      <div class="mock-browser">
+        <div class="mock-browser-bar">
+          <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+          <div class="mock-url">ca-mehta-associates.com</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-hero-block">📈 CA Mehta & Associates — Mumbai</div>
+          <div class="mock-cards">
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+          </div>
+          <div class="mock-stat-row">
+            <div class="mock-stat"></div>
+            <div class="mock-stat"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+        <span style="background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.25);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#a89fff">🌐 Live in 48 hours</span>
+        <span style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#6ce4f5">🔍 Local SEO ready</span>
+        <span style="background:rgba(255,101,132,0.08);border:1px solid rgba(255,101,132,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#ff9fb3">💬 WhatsApp bot active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Others -->
+  <div class="industry-panel" id="panel-others">
+    <div class="industry-content">
+      <h3>Your Field — Whatever It Is</h3>
+      <p>We work with any professional who runs their own practice or business and wants to be more visible and accessible online. If your clients should be finding you on Google but aren't — we can fix that.</p>
+      <ul class="industry-features">
+        <li><div class="feature-check">✓</div>Lawyers, legal consultants, and advocates</li>
+        <li><div class="feature-check">✓</div>Architects, interior designers, and contractors</li>
+        <li><div class="feature-check">✓</div>Tutors, coaches, and education professionals</li>
+        <li><div class="feature-check">✓</div>Fitness trainers, physiotherapists, and wellness practitioners</li>
+        <li><div class="feature-check">✓</div>Photographers, event planners, and creative freelancers</li>
+        <li><div class="feature-check">✓</div>Any small business or independent professional — reach out and let's talk</li>
+      </ul>
+    </div>
+    <div class="industry-visual">
+      <div class="mock-browser">
+        <div class="mock-browser-bar">
+          <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+          <div class="mock-url">your-business.com</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-hero-block">✦ Your Business — Your City</div>
+          <div class="mock-cards">
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+            <div class="mock-card"></div>
+          </div>
+          <div class="mock-stat-row">
+            <div class="mock-stat"></div>
+            <div class="mock-stat"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+        <span style="background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.25);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#a89fff">🌐 Any profession</span>
+        <span style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#6ce4f5">🔍 Found on Google</span>
+        <span style="background:rgba(255,101,132,0.08);border:1px solid rgba(255,101,132,0.2);padding:6px 14px;border-radius:50px;font-size:0.78rem;color:#ff9fb3">⚡ Live in days</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI POWER SECTION -->
+<section class="ai-section" id="why-ai">
+  <div class="ai-grid">
+    <div class="ai-terminal fade-up">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <span class="terminal-title">glink-ai.engine — live</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-comment"># AI drafts your website copy</span></div>
+        <div><span class="t-accent">generate</span>(<span class="t-keyword">website</span>, based_on=<span class="t-string">"your discovery call"</span>)</div>
+        <div><span class="t-comment">  → homepage, about, services, contact — done ✓</span></div>
+        <div><span class="t-accent">deploy</span>(<span class="t-string">"your-business.com"</span>) <span class="t-comment">→ live in 48h ✓</span></div>
+        <br/>
+        <div><span class="t-comment"># WhatsApp bot handles common queries</span></div>
+        <div><span class="t-accent">bot</span>.<span class="t-keyword">reply</span>(<span class="t-string">"User: What are your timings?"</span>)</div>
+        <div><span class="t-value">"We're open Mon–Sat, 9am–7pm. Reply to book."</span></div>
+        <br/>
+        <div><span class="t-comment"># Google finds you for local searches</span></div>
+        <div><span class="t-accent">seo</span>.<span class="t-keyword">setup</span>(<span class="t-string">"your service + your city"</span>) <span class="t-comment">→ done ✓</span></div>
+        <div><span class="t-accent">google_business</span>.<span class="t-keyword">verified</span> = <span class="t-value">true</span></div>
+        <br/>
+        <div><span class="t-white">glink_ai&gt;</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+
+    <div class="ai-features">
+      <div class="section-label">The AI Advantage</div>
+      <h2 class="section-title" style="margin-bottom:36px">Why AI Makes Us 10× Faster</h2>
+
+      <div class="ai-feature fade-up">
+        <div class="ai-feature-icon">⚡</div>
+        <div class="ai-feature-text">
+          <h4>Build in Hours, Not Months</h4>
+          <p>Traditional agencies take 8–16 weeks. Our AI-assisted workflow delivers your full website and automation stack in 48–72 hours — without cutting corners on quality.</p>
+        </div>
+      </div>
+
+      <div class="ai-feature fade-up stagger-1">
+        <div class="ai-feature-icon">🎯</div>
+        <div class="ai-feature-text">
+          <h4>Written for Your Business, Not a Template</h4>
+          <p>We use AI to generate your website copy, page structure, and content based on what you tell us about your work — so the result feels personal, not generic. You review and approve everything.</p>
+        </div>
+      </div>
+
+      <div class="ai-feature fade-up stagger-2">
+        <div class="ai-feature-icon">🤖</div>
+        <div class="ai-feature-text">
+          <h4>Handle Enquiries Without Lifting a Finger</h4>
+          <p>A simple WhatsApp bot or website chatbot can reply to common questions around the clock — so you never miss an enquiry just because you were busy or unavailable.</p>
+        </div>
+      </div>
+
+      <div class="ai-feature fade-up stagger-3">
+        <div class="ai-feature-icon">🔒</div>
+        <div class="ai-feature-text">
+          <h4>You Own Everything We Build</h4>
+          <p>Your website, your domain, your content. We hand it over completely — no lock-in, no dependency on us to keep things running. Simple tools that you control.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="process" id="how-it-works">
+  <div class="section-header text-center">
+    <div class="section-label">The Process</div>
+    <h2 class="section-title">Live in 4 Simple Steps</h2>
+    <p class="section-sub">No tech knowledge needed. You focus on your clients — we handle everything digital.</p>
+  </div>
+
+  <div class="process-steps">
+    <div class="process-step fade-up">
+      <div class="step-number">1</div>
+      <h4>Discovery Call</h4>
+      <p>We learn about your practice, your clients, and your goals. 30 minutes is all it takes.</p>
+    </div>
+    <div class="process-step fade-up stagger-1">
+      <div class="step-number">2</div>
+      <h4>AI-Powered Build</h4>
+      <p>Our team uses AI to build your website, chatbot, and automation stack in 48 hours.</p>
+    </div>
+    <div class="process-step fade-up stagger-2">
+      <div class="step-number">3</div>
+      <h4>Review & Refine</h4>
+      <p>You review everything. We fine-tune copy, design, and automations until it's perfect.</p>
+    </div>
+    <div class="process-step fade-up stagger-3">
+      <div class="step-number">4</div>
+      <h4>Launch & Grow</h4>
+      <p>Your digital presence goes live. SEO, bots, and campaigns start working from day one.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-header text-center">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Simple, Transparent Plans</h2>
+    <p class="section-sub">No hidden fees. No long-term lock-in. Cancel anytime.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card fade-up">
+      <div class="pricing-name">Starter</div>
+      <div class="pricing-price">₹9,999 <span>one-time</span></div>
+      <div class="pricing-desc">Get online with a clean, professional presence. The right foundation for everything that follows.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> 5-page website (mobile-first)</li>
+        <li><span class="check">✓</span> WhatsApp click-to-chat button</li>
+        <li><span class="check">✓</span> Google Business profile setup</li>
+        <li><span class="check">✓</span> Basic on-page SEO</li>
+        <li><span class="check">✓</span> Contact & enquiry form</li>
+        <li><span class="check">✓</span> 30 days of post-launch support</li>
+      </ul>
+      <a href="#contact" class="pricing-btn outline">Get Started</a>
+    </div>
+
+    <div class="pricing-card featured fade-up stagger-1">
+      <div class="pricing-featured-badge">⚡ Most Popular</div>
+      <div class="pricing-name">Growth</div>
+      <div class="pricing-price">₹19,999 <span>one-time</span></div>
+      <div class="pricing-desc">Website plus a WhatsApp automation bot so your business stays responsive around the clock.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Everything in Starter</li>
+        <li><span class="check">✓</span> WhatsApp bot for common enquiries</li>
+        <li><span class="check">✓</span> AI chatbot on your website</li>
+        <li><span class="check">✓</span> Stronger local SEO setup</li>
+        <li><span class="check">✓</span> 60 days of post-launch support</li>
+        <li><span class="check">✓</span> Revisions included</li>
+      </ul>
+      <a href="#contact" class="pricing-btn filled">Get Started</a>
+    </div>
+
+    <div class="pricing-card fade-up stagger-2">
+      <div class="pricing-name">Custom</div>
+      <div class="pricing-price">Let's talk <span>/ bespoke</span></div>
+      <div class="pricing-desc">Have something specific in mind? We'll scope it together and build exactly what you need — nothing more, nothing less.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Everything in Growth</li>
+        <li><span class="check">✓</span> Scope defined after discovery call</li>
+        <li><span class="check">✓</span> Additional automations as needed</li>
+        <li><span class="check">✓</span> Ongoing support retainer available</li>
+        <li><span class="check">✓</span> Priced fairly for what's actually built</li>
+      </ul>
+      <a href="#contact" class="pricing-btn outline">Talk to Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-header text-center">
+    <div class="section-label">What Clients Say</div>
+    <h2 class="section-title">Results That Speak</h2>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card fade-up">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"My clinic website was live in 2 days. Within 3 weeks I was getting 15–20 appointment requests a week through the WhatsApp bot alone. I didn't have to do anything."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:rgba(108,99,255,0.2);color:#a89fff">DS</div>
+        <div>
+          <div class="author-name">Dr. Deepak Sharma</div>
+          <div class="author-title">Cardiologist, Delhi</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card fade-up stagger-1">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Before Glink.ai, I had zero online presence. Now I rank on the first page of Google for 'ENT specialist Pune' and new patients find me every day. The ROI has been incredible."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:rgba(0,212,255,0.1);color:#6ce4f5">RP</div>
+        <div>
+          <div class="author-name">Dr. Riya Patel</div>
+          <div class="author-title">ENT Specialist, Pune</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card fade-up stagger-2">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"As a CA I was always too busy to think about my own marketing. Glink handled everything — my website, Google listing, and even a bot that answers client queries on WhatsApp."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:rgba(255,101,132,0.1);color:#ff9fb3">AM</div>
+        <div>
+          <div class="author-name">Amit Mehta</div>
+          <div class="author-title">Chartered Accountant, Mumbai</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Let's Build Your Digital Presence</h2>
+    <p class="section-sub">Fill in the form or reach out directly. We'll get back to you within 2 hours.</p>
+  </div>
+
+  <div class="contact-wrapper">
+    <div class="contact-info">
+      <h3>Talk to us directly</h3>
+      <p>No sales scripts. Just a real conversation about what you need and how we can help — whether that's a new website or a full digital transformation.</p>
+
+      <div class="contact-methods">
+        <a href="tel:+919818017864" class="contact-method">
+          <div class="contact-method-icon">📞</div>
+          <div class="contact-method-text">
+            <div class="contact-method-label">Call / WhatsApp</div>
+            <div class="contact-method-value">+91 98180 17864</div>
+          </div>
+        </a>
+
+        <a href="mailto:alindgupta99@gmail.com" class="contact-method">
+          <div class="contact-method-icon">✉️</div>
+          <div class="contact-method-text">
+            <div class="contact-method-label">Email us</div>
+            <div class="contact-method-value">alindgupta99@gmail.com</div>
+          </div>
+        </a>
+
+        <a href="https://wa.me/919818017864" target="_blank" rel="noopener" class="contact-method">
+          <div class="contact-method-icon">💬</div>
+          <div class="contact-method-text">
+            <div class="contact-method-label">WhatsApp Chat</div>
+            <div class="contact-method-value">Message us now →</div>
+          </div>
+        </a>
+      </div>
+
+      <div style="margin-top:28px;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:0.3px">RESPONSE TIME</div>
+        <div style="font-size:0.925rem;color:var(--text)">⚡ We typically reply within <strong>2 hours</strong> during business hours (Mon–Sat, 9am–8pm IST)</div>
+      </div>
+    </div>
+
+    <div class="contact-form" id="contactFormWrapper">
+      <h3>Tell us about your project</h3>
+      <p>Share a few details and we'll come prepared with ideas specific to your business.</p>
+
+      <form id="contactForm" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" name="name" placeholder="Dr. Sharma / Alind Gupta" required />
+          </div>
+          <div class="form-group">
+            <label>Phone / WhatsApp *</label>
+            <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="you@example.com" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Profession *</label>
+            <select name="profession" required>
+              <option value="" disabled selected>Select your field</option>
+              <option>Doctor / Specialist</option>
+              <option>Clinic / Hospital</option>
+              <option>Real Estate Agent / Builder</option>
+              <option>CA / Tax Consultant</option>
+              <option>Financial Advisor</option>
+              <option>Lawyer / Legal Professional</option>
+              <option>Architect / Interior Designer</option>
+              <option>Tutor / Coach / Trainer</option>
+              <option>Photographer / Creative</option>
+              <option>Small Business Owner</option>
+              <option>Other Professional</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" name="city" placeholder="Delhi, Mumbai, Pune..." />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>What are you looking for?</label>
+          <select name="service">
+            <option value="" disabled selected>Select a service</option>
+            <option>New Website</option>
+            <option>Website Redesign</option>
+            <option>WhatsApp Bot / Automation</option>
+            <option>Google SEO & Local Presence</option>
+            <option>Google Business Profile Setup</option>
+            <option>Website + Automation Bundle</option>
+            <option>Not sure — need guidance</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Tell us more (optional)</label>
+          <textarea name="message" placeholder="E.g. I'm a cardiologist in Delhi, no website currently, want to get online and start getting appointment bookings automatically..."></textarea>
+        </div>
+
+        <button type="submit" class="form-submit" id="form-submit-btn">Send Message →</button>
+      </form>
+
+      <div class="form-success" id="formSuccess">
+        <div class="form-success-icon">🎉</div>
+        <h4>Message Sent!</h4>
+        <p>We'll be in touch within 2 hours. Check your WhatsApp and email.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Glink.ai</div>
+    <ul class="footer-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#industries">Industries</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="footer-social">
+      <a href="https://wa.me/919818017864" target="_blank" rel="noopener" class="social-link" title="WhatsApp">💬</a>
+      <a href="mailto:alindgupta99@gmail.com" class="social-link" title="Email">✉️</a>
+      <a href="tel:+919818017864" class="social-link" title="Call">📞</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 Glink.ai. All rights reserved. &nbsp;·&nbsp; Built with AI. Powered by results.
+  </div>
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/919818017864?text=Hi%2C%20I%20found%20Glink.ai%20and%20I%27m%20interested%20in%20your%20services." target="_blank" rel="noopener" class="wa-float" title="Chat on WhatsApp">💬</a>
+
+<script>
+  // Mobile menu
+  function toggleMobileMenu() {
+    const links = document.querySelector('.nav-links');
+    links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '70px';
+    links.style.left = '0';
+    links.style.width = '100%';
+    links.style.background = 'rgba(5,6,15,0.98)';
+    links.style.backdropFilter = 'blur(20px)';
+    links.style.padding = '24px 6%';
+    links.style.gap = '24px';
+    links.style.borderBottom = '1px solid rgba(255,255,255,0.07)';
+  }
+
+  // Close mobile menu on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      const links = document.querySelector('.nav-links');
+      links.style.display = 'none';
+    });
+  });
+
+  // Scroll fade-up observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Industry tabs
+  function showIndustry(id, btn) {
+    document.querySelectorAll('.industry-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.industry-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Form submit
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('contactForm');
+    const btn  = document.getElementById('form-submit-btn');
+    const success = document.getElementById('formSuccess');
+
+    const data = {
+      name:       form.name.value.trim(),
+      phone:      form.phone.value.trim(),
+      email:      form.email.value.trim(),
+      profession: form.profession.value,
+      city:       form.city.value.trim(),
+      service:    form.service.value,
+      message:    form.message.value.trim(),
+    };
+
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    try {
+      await fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    } catch (_) {
+      // Still show success to the user even if the network is down
+    }
+
+    form.style.display = 'none';
+    success.style.display = 'block';
+
+    const msg = encodeURIComponent(
+      `Hi, I'm ${data.name} (${data.phone}). I found Glink.ai and I'm interested in your services.`
+    );
+    setTimeout(() => {
+      window.open(`https://wa.me/919818017864?text=${msg}`, '_blank');
+    }, 800);
+  }
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 40) {
+      nav.style.background = 'rgba(5,6,15,0.95)';
+    } else {
+      nav.style.background = 'rgba(5,6,15,0.75)';
+    }
+  });
+
+  // Parallax orbs on mouse move
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    const orb1 = document.querySelector('.orb-1');
+    const orb2 = document.querySelector('.orb-2');
+    if (orb1) orb1.style.transform = `translate(${x * 0.8}px, ${y * 0.8}px)`;
+    if (orb2) orb2.style.transform = `translate(${-x * 0.6}px, ${-y * 0.6}px)`;
+  });
+</script>
+</body>
+</html>
