@@ -8,7 +8,7 @@ const db           = require('./db');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const SECRET = process.env.SESSION_SECRET || 'glink_ai_secret';
 const COOKIE = 'glink_admin';
 
