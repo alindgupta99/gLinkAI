@@ -1,30 +1,56 @@
 require('dotenv').config();
-const express        = require('express');
-const session        = require('express-session');
-const cors           = require('cors');
-const path           = require('path');
-const db             = require('./db');
+const express      = require('express');
+const cookieParser = require('cookie-parser');
+const cors         = require('cors');
+const crypto       = require('crypto');
+const path         = require('path');
+const db           = require('./db');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = 'admin123';
+const SECRET = process.env.SESSION_SECRET || 'glink_ai_secret';
+const COOKIE = 'glink_admin';
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname)));
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'glink_ai_secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 8 * 60 * 60 * 1000 }, // 8 hours
-}));
 
-// ── Auth guard ──────────────────────────────────────────────────────────────
+// ── Signed-cookie auth (stateless — works on serverless) ────────────────────
+function makeToken() {
+  const payload = Date.now().toString();
+  const sig = crypto.createHmac('sha256', SECRET).update(payload).digest('hex');
+  return Buffer.from(`${payload}.${sig}`).toString('base64');
+}
+
+function validToken(token) {
+  if (!token) return false;
+  try {
+    const decoded = Buffer.from(token, 'base64').toString();
+    const dot = decoded.lastIndexOf('.');
+    const payload = decoded.slice(0, dot);
+    const sig     = decoded.slice(dot + 1);
+    const expected = crypto.createHmac('sha256', SECRET).update(payload).digest('hex');
+    return sig === expected;
+  } catch { return false; }
+}
+
 function requireAdmin(req, res, next) {
-  if (req.session && req.session.isAdmin) return next();
+  if (validToken(req.cookies[COOKIE])) return next();
   res.status(401).json({ error: 'Unauthorised' });
 }
+
+// ── Ensure DB is ready before any request (safe for serverless cold starts) ─
+const dbReady = db.initDB().catch(err => {
+  console.error('DB init failed:', err.message);
+});
+
+app.use(async (_req, _res, next) => {
+  await dbReady;
+  next();
+});
 
 // ── Public: submit contact form ─────────────────────────────────────────────
 app.post('/api/contacts', async (req, res) => {
@@ -43,30 +69,33 @@ app.post('/api/contacts', async (req, res) => {
 
 // ── Admin: login ────────────────────────────────────────────────────────────
 app.post('/api/admin/login', (req, res) => {
-  const { password } = req.body;
-  if (password === ADMIN_PASSWORD) {
-    req.session.isAdmin = true;
-    return res.json({ ok: true });
+  if (req.body.password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Wrong password.' });
   }
-  res.status(401).json({ error: 'Wrong password.' });
+  res.cookie(COOKIE, makeToken(), {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 8 * 60 * 60 * 1000, // 8 hours
+  });
+  res.json({ ok: true });
 });
 
 // ── Admin: check session ────────────────────────────────────────────────────
 app.get('/api/admin/session', (req, res) => {
-  res.json({ isAdmin: !!(req.session && req.session.isAdmin) });
+  res.json({ isAdmin: validToken(req.cookies[COOKIE]) });
 });
 
 // ── Admin: logout ───────────────────────────────────────────────────────────
 app.post('/api/admin/logout', (req, res) => {
-  req.session.destroy();
+  res.clearCookie(COOKIE);
   res.json({ ok: true });
 });
 
 // ── Admin: get all contacts ─────────────────────────────────────────────────
 app.get('/api/admin/contacts', requireAdmin, async (_req, res) => {
   try {
-    const contacts = await db.getAllContacts();
-    res.json(contacts);
+    res.json(await db.getAllContacts());
   } catch (err) {
     console.error('Fetch error:', err.message);
     res.status(500).json({ error: 'Failed to fetch contacts.' });
@@ -101,12 +130,15 @@ app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// ── Start ───────────────────────────────────────────────────────────────────
-db.initDB()
-  .then(() => {
-    app.listen(PORT, () => console.log(`Glink.ai server running → http://localhost:${PORT}`));
-  })
-  .catch(err => {
+// ── Local dev: listen on port ───────────────────────────────────────────────
+if (require.main === module) {
+  db.initDB().then(() => {
+    app.listen(PORT, () => console.log(`Glink.ai running → http://localhost:${PORT}`));
+  }).catch(err => {
     console.error('Database connection failed:', err.message);
     process.exit(1);
   });
+}
+
+// ── Vercel: export app as serverless handler ────────────────────────────────
+module.exports = app;
