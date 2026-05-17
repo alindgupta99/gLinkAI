@@ -16,7 +16,15 @@ const COOKIE = 'glink_admin';
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    } else if (/\.(jpe?g|png|webp|svg|ico|woff2?)$/.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    }
+  },
+}));
 
 // ── Signed-cookie auth (stateless — works on serverless) ────────────────────
 function makeToken() {
@@ -143,6 +151,7 @@ app.get('/admin', (_req, res) => {
 
 // ── Serve main site ─────────────────────────────────────────────────────────
 app.get('/', (_req, res) => {
+  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 

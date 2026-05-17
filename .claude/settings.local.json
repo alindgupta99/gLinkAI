@@ -7,7 +7,11 @@
       "PowerShell(Get-NetTCPConnection *)",
       "Bash(node generate-logos.js)",
       "Bash(node generate-logo-combined.js)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:pagespeed.web.dev)",
+      "WebFetch(domain:www.googleapis.com)",
+      "Bash(npx lighthouse *)",
+      "Bash(node -e ' *)"
     ]
   }
 }
