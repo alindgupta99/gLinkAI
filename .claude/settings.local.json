@@ -4,7 +4,10 @@
       "Bash(npm --version)",
       "Bash(psql --version)",
       "Bash(npm install *)",
-      "PowerShell(Get-NetTCPConnection *)"
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(node generate-logos.js)",
+      "Bash(node generate-logo-combined.js)",
+      "WebSearch"
     ]
   }
 }

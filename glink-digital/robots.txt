@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://g-link-ai.vercel.app/sitemap.xml
