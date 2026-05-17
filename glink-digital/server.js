@@ -125,6 +125,17 @@ app.delete('/api/admin/contacts/:id', requireAdmin, async (req, res) => {
   }
 });
 
+// ── Serve sitemap & robots ──────────────────────────────────────────────────
+app.get('/sitemap.xml', (_req, res) => {
+  res.setHeader('Content-Type', 'application/xml');
+  res.sendFile(path.join(__dirname, 'sitemap.xml'));
+});
+
+app.get('/robots.txt', (_req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.sendFile(path.join(__dirname, 'robots.txt'));
+});
+
 // ── Serve admin panel ───────────────────────────────────────────────────────
 app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
