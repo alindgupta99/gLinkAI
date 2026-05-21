@@ -50,6 +50,17 @@ function requireAdmin(req, res, next) {
   res.status(401).json({ error: 'Unauthorised' });
 }
 
+// ── Serve sitemap & robots before DB init (never block crawlers on cold start) ─
+app.get('/sitemap.xml', (_req, res) => {
+  res.setHeader('Content-Type', 'application/xml');
+  res.sendFile(path.join(__dirname, 'sitemap.xml'));
+});
+
+app.get('/robots.txt', (_req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.sendFile(path.join(__dirname, 'robots.txt'));
+});
+
 // ── Ensure DB is ready before any request (safe for serverless cold starts) ─
 const dbReady = db.initDB().catch(err => {
   console.error('DB init failed:', err.message);
@@ -131,17 +142,6 @@ app.delete('/api/admin/contacts/:id', requireAdmin, async (req, res) => {
     console.error('Delete error:', err.message);
     res.status(500).json({ error: 'Failed to delete.' });
   }
-});
-
-// ── Serve sitemap & robots ──────────────────────────────────────────────────
-app.get('/sitemap.xml', (_req, res) => {
-  res.setHeader('Content-Type', 'application/xml');
-  res.sendFile(path.join(__dirname, 'sitemap.xml'));
-});
-
-app.get('/robots.txt', (_req, res) => {
-  res.setHeader('Content-Type', 'text/plain');
-  res.sendFile(path.join(__dirname, 'robots.txt'));
 });
 
 // ── Serve admin panel ───────────────────────────────────────────────────────
