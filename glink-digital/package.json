@@ -9,6 +9,7 @@
   "dependencies": {
     "@napi-rs/canvas": "^1.0.0",
     "@neondatabase/serverless": "^0.10.4",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

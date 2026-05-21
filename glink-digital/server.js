@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express      = require('express');
+const compression  = require('compression');
 const cookieParser = require('cookie-parser');
 const cors         = require('cors');
 const crypto       = require('crypto');
@@ -13,13 +14,27 @@ const SECRET = process.env.SESSION_SECRET || 'glink_ai_secret';
 const COOKIE = 'glink_admin';
 
 // ── Middleware ──────────────────────────────────────────────────────────────
+app.use(compression());
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+// Security & trust headers (ranking signal + clickjacking protection)
+app.use((_req, res, next) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
+
 app.use(express.static(path.join(__dirname), {
   setHeaders(res, filePath) {
     if (filePath.endsWith('.html')) {
       res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    } else if (/\.(css|js)$/.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     } else if (/\.(jpe?g|png|webp|svg|ico|woff2?)$/.test(filePath)) {
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     }
