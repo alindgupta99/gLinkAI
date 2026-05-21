@@ -1,22 +1,10 @@
 require('dotenv').config();
-const { Pool } = require('pg');
+const { neon } = require('@neondatabase/serverless');
 
-const pool = process.env.DATABASE_URL
-  ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-      max: 1,
-    })
-  : new Pool({
-      host:     process.env.DB_HOST     || 'localhost',
-      port:     parseInt(process.env.DB_PORT) || 5432,
-      database: process.env.DB_NAME     || 'glink_ai',
-      user:     process.env.DB_USER     || 'postgres',
-      password: process.env.DB_PASSWORD || '',
-    });
+const sql = neon(process.env.DATABASE_URL);
 
 async function initDB() {
-  await pool.query(`
+  await sql`
     CREATE TABLE IF NOT EXISTS contacts (
       id         SERIAL PRIMARY KEY,
       name       VARCHAR(255) NOT NULL,
@@ -29,34 +17,32 @@ async function initDB() {
       contacted  BOOLEAN      NOT NULL DEFAULT FALSE,
       created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
     )
-  `);
+  `;
   console.log('Database ready.');
 }
 
 async function insertContact({ name, phone, email, profession, city, service, message }) {
-  const { rows } = await pool.query(
-    `INSERT INTO contacts (name, phone, email, profession, city, service, message)
-     VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-    [name, phone, email || null, profession || null, city || null, service || null, message || null]
-  );
+  const rows = await sql`
+    INSERT INTO contacts (name, phone, email, profession, city, service, message)
+    VALUES (${name}, ${phone}, ${email ?? null}, ${profession ?? null}, ${city ?? null}, ${service ?? null}, ${message ?? null})
+    RETURNING *
+  `;
   return rows[0];
 }
 
 async function getAllContacts() {
-  const { rows } = await pool.query('SELECT * FROM contacts ORDER BY created_at DESC');
-  return rows;
+  return sql`SELECT * FROM contacts ORDER BY created_at DESC`;
 }
 
 async function toggleContacted(id) {
-  const { rows } = await pool.query(
-    `UPDATE contacts SET contacted = NOT contacted WHERE id = $1 RETURNING *`,
-    [id]
-  );
+  const rows = await sql`
+    UPDATE contacts SET contacted = NOT contacted WHERE id = ${id} RETURNING *
+  `;
   return rows[0];
 }
 
 async function deleteContact(id) {
-  await pool.query('DELETE FROM contacts WHERE id = $1', [id]);
+  await sql`DELETE FROM contacts WHERE id = ${id}`;
 }
 
 module.exports = { initDB, insertContact, getAllContacts, toggleContacted, deleteContact };
