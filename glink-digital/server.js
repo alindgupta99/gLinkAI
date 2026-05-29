@@ -11,6 +11,7 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const SECRET = process.env.SESSION_SECRET || 'glink_ai_secret';
+const WA_VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN || 'glink_webhook_secret';
 const COOKIE = 'glink_admin';
 
 // ── Middleware ──────────────────────────────────────────────────────────────
@@ -77,7 +78,7 @@ app.get('/robots.txt', (_req, res) => {
 });
 
 // ── Ensure DB is ready before any request (safe for serverless cold starts) ─
-const dbReady = db.initDB().catch(err => {
+const dbReady = Promise.all([db.initDB(), db.initWhatsappTable()]).catch(err => {
   console.error('DB init failed:', err.message);
 });
 
@@ -156,6 +157,61 @@ app.delete('/api/admin/contacts/:id', requireAdmin, async (req, res) => {
   } catch (err) {
     console.error('Delete error:', err.message);
     res.status(500).json({ error: 'Failed to delete.' });
+  }
+});
+
+// ── WhatsApp webhook: Meta verification ────────────────────────────────────
+app.get('/api/webhook/whatsapp', (req, res) => {
+  const mode      = req.query['hub.mode'];
+  const token     = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
+  if (mode === 'subscribe' && token === WA_VERIFY_TOKEN) {
+    console.log('WhatsApp webhook verified');
+    return res.status(200).send(challenge);
+  }
+  res.sendStatus(403);
+});
+
+// ── WhatsApp webhook: receive events ───────────────────────────────────────
+app.post('/api/webhook/whatsapp', async (req, res) => {
+  res.sendStatus(200); // acknowledge immediately — Meta retries if you don't
+  const body = req.body;
+  try {
+    for (const entry of body.entry || []) {
+      for (const change of entry.changes || []) {
+        const value = change.value || {};
+        for (const s of value.statuses || []) {
+          await db.insertWhatsappEvent({
+            event_type:   'status',
+            message_id:   s.id,
+            recipient:    s.recipient_id,
+            status:       s.status,
+            error:        s.errors?.[0]?.title ?? null,
+          });
+        }
+        for (const m of value.messages || []) {
+          await db.insertWhatsappEvent({
+            event_type:   'incoming',
+            message_id:   m.id,
+            from_number:  m.from,
+            message_text: m.text?.body ?? null,
+            message_type: m.type,
+          });
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Webhook processing error:', err.message);
+  }
+});
+
+// ── Admin: get WhatsApp message logs ───────────────────────────────────────
+app.get('/api/admin/whatsapp-messages', requireAdmin, async (_req, res) => {
+  try {
+    res.json(await db.getWhatsappMessages());
+  } catch (err) {
+    console.error('WhatsApp fetch error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch WhatsApp messages.' });
   }
 });
 

@@ -427,6 +427,53 @@
 
     .refresh-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
+    /* ── TABS ───────────────────────────────────────────────── */
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 5px;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: rgba(108,99,255,0.15);
+      color: var(--text);
+      border: 1px solid rgba(108,99,255,0.3);
+    }
+
+    /* WA status badges */
+    .wa-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .wa-sent     { background: rgba(0,212,255,0.1);  color: #00d4ff; }
+    .wa-delivered{ background: rgba(255,165,0,0.12); color: #ffb347; }
+    .wa-read     { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .wa-failed   { background: rgba(239,68,68,0.12); color: #ef4444; }
+    .wa-incoming { background: rgba(167,139,250,0.12); color: #a78bfa; }
+
     /* Responsive */
     @media (max-width: 900px) {
       .admin-main { padding: 16px; }
@@ -469,6 +516,14 @@
   </div>
 
   <div class="admin-main">
+    <!-- Tab nav -->
+    <div class="tab-nav">
+      <button class="tab-btn active" id="tab-contacts" onclick="switchTab('contacts')">Contacts</button>
+      <button class="tab-btn" id="tab-whatsapp" onclick="switchTab('whatsapp')">WhatsApp Messages</button>
+    </div>
+
+    <!-- ── CONTACTS TAB ── -->
+    <div id="section-contacts">
     <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card">
@@ -526,6 +581,38 @@
         <div class="empty-text">No contacts match your filter.</div>
       </div>
     </div>
+    </div> <!-- /section-contacts -->
+
+    <!-- ── WHATSAPP TAB ── -->
+    <div id="section-whatsapp" style="display:none">
+      <div class="table-header">
+        <div class="table-title">WhatsApp Message Logs</div>
+        <div class="table-controls">
+          <button class="refresh-btn" onclick="loadWhatsapp()">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="loading" id="wa-loading">Loading…</div>
+        <table id="wa-table" style="display:none">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Time</th>
+              <th>Type</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Detail</th>
+            </tr>
+          </thead>
+          <tbody id="wa-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="wa-empty" style="display:none">
+          <div class="empty-icon">💬</div>
+          <div class="empty-text">No WhatsApp events yet.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -573,6 +660,16 @@
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-screen').style.display = 'block';
     loadContacts();
+  }
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+  function switchTab(tab) {
+    const isContacts = tab === 'contacts';
+    document.getElementById('section-contacts').style.display = isContacts ? 'block' : 'none';
+    document.getElementById('section-whatsapp').style.display = isContacts ? 'none'  : 'block';
+    document.getElementById('tab-contacts').classList.toggle('active', isContacts);
+    document.getElementById('tab-whatsapp').classList.toggle('active', !isContacts);
+    if (!isContacts) loadWhatsapp();
   }
 
   // ── Data ─────────────────────────────────────────────────────────────────
@@ -713,6 +810,44 @@
     allContacts = allContacts.filter(c => c.id !== id);
     updateStats();
     renderTable();
+  }
+
+  // ── WhatsApp ──────────────────────────────────────────────────────────────
+  async function loadWhatsapp() {
+    document.getElementById('wa-loading').style.display = 'block';
+    document.getElementById('wa-table').style.display   = 'none';
+    document.getElementById('wa-empty').style.display   = 'none';
+    try {
+      const res = await fetch('/api/admin/whatsapp-messages', { credentials: 'include' });
+      if (!res.ok) { doLogout(); return; }
+      const msgs = await res.json();
+      document.getElementById('wa-loading').style.display = 'none';
+      if (msgs.length === 0) {
+        document.getElementById('wa-empty').style.display = 'block';
+        return;
+      }
+      document.getElementById('wa-table').style.display = 'table';
+      document.getElementById('wa-tbody').innerHTML = msgs.map((m, i) => {
+        const isStatus   = m.event_type === 'status';
+        const badgeClass = isStatus ? `wa-${m.status}` : 'wa-incoming';
+        const badgeLabel = isStatus ? (m.status || '').toUpperCase() : 'INCOMING';
+        const phone      = isStatus ? (m.recipient || '—') : (m.from_number || '—');
+        const detail     = isStatus
+          ? (m.error ? `<span style="color:var(--red);font-size:0.8rem">${esc(m.error)}</span>` : esc(m.message_id || '—'))
+          : (m.message_text ? esc(m.message_text) : `<span class="td-muted">[${esc(m.message_type || 'media')}]</span>`);
+        return `
+          <tr>
+            <td class="td-muted">${i + 1}</td>
+            <td class="td-date">${formatDate(m.created_at)}</td>
+            <td><span class="wa-badge ${badgeClass}">${badgeLabel}</span></td>
+            <td class="td-muted">${phone}</td>
+            <td class="td-muted" style="font-size:0.78rem">${isStatus ? (m.status || '—') : m.event_type}</td>
+            <td class="td-muted" style="font-size:0.8rem;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${detail}</td>
+          </tr>`;
+      }).join('');
+    } catch {
+      document.getElementById('wa-loading').textContent = 'Failed to load. Check server.';
+    }
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

@@ -45,4 +45,34 @@ async function deleteContact(id) {
   await sql`DELETE FROM contacts WHERE id = ${id}`;
 }
 
-module.exports = { initDB, insertContact, getAllContacts, toggleContacted, deleteContact };
+async function initWhatsappTable() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS whatsapp_messages (
+      id           SERIAL PRIMARY KEY,
+      event_type   VARCHAR(20)  NOT NULL,
+      message_id   VARCHAR(255),
+      recipient    VARCHAR(50),
+      status       VARCHAR(20),
+      error        TEXT,
+      from_number  VARCHAR(50),
+      message_text TEXT,
+      message_type VARCHAR(50),
+      created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+}
+
+async function insertWhatsappEvent({ event_type, message_id, recipient, status, error, from_number, message_text, message_type }) {
+  const rows = await sql`
+    INSERT INTO whatsapp_messages (event_type, message_id, recipient, status, error, from_number, message_text, message_type)
+    VALUES (${event_type}, ${message_id ?? null}, ${recipient ?? null}, ${status ?? null}, ${error ?? null}, ${from_number ?? null}, ${message_text ?? null}, ${message_type ?? null})
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+async function getWhatsappMessages() {
+  return sql`SELECT * FROM whatsapp_messages ORDER BY created_at DESC LIMIT 500`;
+}
+
+module.exports = { initDB, insertContact, getAllContacts, toggleContacted, deleteContact, initWhatsappTable, insertWhatsappEvent, getWhatsappMessages };
