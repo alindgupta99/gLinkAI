@@ -71,8 +71,27 @@ async function insertWhatsappEvent({ event_type, message_id, recipient, status, 
   return rows[0];
 }
 
-async function getWhatsappMessages() {
-  return sql`SELECT * FROM whatsapp_messages ORDER BY created_at DESC LIMIT 500`;
+async function getWhatsappMessages({ status, sort } = {}) {
+  const validStatuses = ['sent', 'delivered', 'read', 'failed', 'incoming'];
+  const validSorts    = ['asc', 'desc'];
+  const sortDir       = validSorts.includes(sort) ? sort : 'desc';
+  const filterStatus  = validStatuses.includes(status) ? status : null;
+
+  if (filterStatus === 'incoming') {
+    return sortDir === 'desc'
+      ? sql`SELECT * FROM whatsapp_messages WHERE event_type = 'incoming' ORDER BY created_at DESC LIMIT 500`
+      : sql`SELECT * FROM whatsapp_messages WHERE event_type = 'incoming' ORDER BY created_at ASC  LIMIT 500`;
+  }
+
+  if (filterStatus) {
+    return sortDir === 'desc'
+      ? sql`SELECT * FROM whatsapp_messages WHERE status = ${filterStatus} ORDER BY created_at DESC LIMIT 500`
+      : sql`SELECT * FROM whatsapp_messages WHERE status = ${filterStatus} ORDER BY created_at ASC  LIMIT 500`;
+  }
+
+  return sortDir === 'desc'
+    ? sql`SELECT * FROM whatsapp_messages ORDER BY created_at DESC LIMIT 500`
+    : sql`SELECT * FROM whatsapp_messages ORDER BY created_at ASC  LIMIT 500`;
 }
 
 module.exports = { initDB, insertContact, getAllContacts, toggleContacted, deleteContact, initWhatsappTable, insertWhatsappEvent, getWhatsappMessages };

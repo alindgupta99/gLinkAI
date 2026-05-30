@@ -206,9 +206,10 @@ app.post('/api/webhook/whatsapp', async (req, res) => {
 });
 
 // ── Admin: get WhatsApp message logs ───────────────────────────────────────
-app.get('/api/admin/whatsapp-messages', requireAdmin, async (_req, res) => {
+app.get('/api/admin/whatsapp-messages', requireAdmin, async (req, res) => {
   try {
-    res.json(await db.getWhatsappMessages());
+    const { status, sort } = req.query;
+    res.json(await db.getWhatsappMessages({ status, sort }));
   } catch (err) {
     console.error('WhatsApp fetch error:', err.message);
     res.status(500).json({ error: 'Failed to fetch WhatsApp messages.' });

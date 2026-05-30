@@ -588,6 +588,13 @@
       <div class="table-header">
         <div class="table-title">WhatsApp Message Logs</div>
         <div class="table-controls">
+          <button class="filter-btn active" id="wa-filter-all"       onclick="setWaFilter('all', this)">All</button>
+          <button class="filter-btn"         id="wa-filter-sent"      onclick="setWaFilter('sent', this)">Sent</button>
+          <button class="filter-btn"         id="wa-filter-delivered" onclick="setWaFilter('delivered', this)">Delivered</button>
+          <button class="filter-btn"         id="wa-filter-read"      onclick="setWaFilter('read', this)">Read</button>
+          <button class="filter-btn"         id="wa-filter-failed"    onclick="setWaFilter('failed', this)">Failed</button>
+          <button class="filter-btn"         id="wa-filter-incoming"  onclick="setWaFilter('incoming', this)">Incoming</button>
+          <button class="refresh-btn" id="wa-sort-btn" onclick="toggleWaSort()">↓ Newest first</button>
           <button class="refresh-btn" onclick="loadWhatsapp()">↻ Refresh</button>
         </div>
       </div>
@@ -608,7 +615,7 @@
         </table>
         <div class="empty-state" id="wa-empty" style="display:none">
           <div class="empty-icon">💬</div>
-          <div class="empty-text">No WhatsApp events yet.</div>
+          <div class="empty-text">No WhatsApp events match this filter.</div>
         </div>
       </div>
     </div>
@@ -619,6 +626,8 @@
 <script>
   let allContacts = [];
   let activeFilter = 'all';
+  let waFilter = 'all';
+  let waSort   = 'desc';
 
   // ── Auth ─────────────────────────────────────────────────────────────────
   async function checkSession() {
@@ -812,13 +821,30 @@
     renderTable();
   }
 
+  // ── WhatsApp controls ─────────────────────────────────────────────────────
+  function setWaFilter(filter, btn) {
+    waFilter = filter;
+    document.querySelectorAll('[id^="wa-filter-"]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadWhatsapp();
+  }
+
+  function toggleWaSort() {
+    waSort = waSort === 'desc' ? 'asc' : 'desc';
+    const btn = document.getElementById('wa-sort-btn');
+    btn.textContent = waSort === 'desc' ? '↓ Newest first' : '↑ Oldest first';
+    loadWhatsapp();
+  }
+
   // ── WhatsApp ──────────────────────────────────────────────────────────────
   async function loadWhatsapp() {
     document.getElementById('wa-loading').style.display = 'block';
     document.getElementById('wa-table').style.display   = 'none';
     document.getElementById('wa-empty').style.display   = 'none';
     try {
-      const res = await fetch('/api/admin/whatsapp-messages', { credentials: 'include' });
+      const params = new URLSearchParams({ sort: waSort });
+      if (waFilter !== 'all') params.set('status', waFilter);
+      const res = await fetch(`/api/admin/whatsapp-messages?${params}`, { credentials: 'include' });
       if (!res.ok) { doLogout(); return; }
       const msgs = await res.json();
       document.getElementById('wa-loading').style.display = 'none';
