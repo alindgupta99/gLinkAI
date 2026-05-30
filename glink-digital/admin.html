@@ -458,6 +458,96 @@
       border: 1px solid rgba(108,99,255,0.3);
     }
 
+    /* ── WA filter dropdown ─────────────────────────────────── */
+    .wa-filter-wrap { position: relative; }
+
+    .wa-filter-icon-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 11px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.2s, color 0.2s;
+      position: relative;
+    }
+
+    .wa-filter-icon-btn:hover { border-color: var(--accent); color: var(--text); }
+    .wa-filter-icon-btn.filtered { border-color: var(--accent); color: var(--accent); }
+
+    .wa-filter-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: absolute;
+      top: -3px; right: -3px;
+      display: none;
+      border: 2px solid var(--bg);
+    }
+
+    .wa-filter-icon-btn.filtered .wa-filter-dot { display: block; }
+
+    .wa-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 5px;
+      min-width: 160px;
+      z-index: 100;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+    }
+
+    .wa-dropdown.open { display: block; }
+
+    .wa-dropdown-item {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .wa-dropdown-item:hover { background: rgba(108,99,255,0.08); color: var(--text); }
+
+    .wa-dropdown-item.active {
+      color: var(--text);
+      background: rgba(108,99,255,0.12);
+    }
+
+    .wa-dropdown-item.active::after { content: '✓'; color: var(--accent); font-size: 0.75rem; }
+
+    /* ── WA sort icon in column header ──────────────────────── */
+    .wa-sort-th {
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .wa-sort-th:hover { color: var(--text); }
+
+    .sort-icon {
+      display: inline-block;
+      margin-left: 5px;
+      opacity: 0.5;
+      font-style: normal;
+      font-size: 0.75rem;
+    }
+
     /* WA status badges */
     .wa-badge {
       display: inline-block;
@@ -588,13 +678,24 @@
       <div class="table-header">
         <div class="table-title">WhatsApp Message Logs</div>
         <div class="table-controls">
-          <button class="filter-btn active" id="wa-filter-all"       onclick="setWaFilter('all', this)">All</button>
-          <button class="filter-btn"         id="wa-filter-sent"      onclick="setWaFilter('sent', this)">Sent</button>
-          <button class="filter-btn"         id="wa-filter-delivered" onclick="setWaFilter('delivered', this)">Delivered</button>
-          <button class="filter-btn"         id="wa-filter-read"      onclick="setWaFilter('read', this)">Read</button>
-          <button class="filter-btn"         id="wa-filter-failed"    onclick="setWaFilter('failed', this)">Failed</button>
-          <button class="filter-btn"         id="wa-filter-incoming"  onclick="setWaFilter('incoming', this)">Incoming</button>
-          <button class="refresh-btn" id="wa-sort-btn" onclick="toggleWaSort()">↓ Newest first</button>
+          <!-- Filter icon + dropdown -->
+          <div class="wa-filter-wrap">
+            <button class="wa-filter-icon-btn" id="wa-filter-btn" onclick="toggleWaDropdown(event)">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M1 2.5A.5.5 0 0 1 1.5 2h13a.5.5 0 0 1 .354.854L10 8.707V14.5a.5.5 0 0 1-.777.416l-3-2A.5.5 0 0 1 6 12.5V8.707L1.146 2.854A.5.5 0 0 1 1 2.5z"/>
+              </svg>
+              <span id="wa-filter-label">All</span>
+              <span class="wa-filter-dot"></span>
+            </button>
+            <div class="wa-dropdown" id="wa-dropdown">
+              <div class="wa-dropdown-item active" onclick="setWaFilter('all', this)">All</div>
+              <div class="wa-dropdown-item" onclick="setWaFilter('sent', this)">Sent</div>
+              <div class="wa-dropdown-item" onclick="setWaFilter('delivered', this)">Delivered</div>
+              <div class="wa-dropdown-item" onclick="setWaFilter('read', this)">Read</div>
+              <div class="wa-dropdown-item" onclick="setWaFilter('failed', this)">Failed</div>
+              <div class="wa-dropdown-item" onclick="setWaFilter('incoming', this)">Incoming</div>
+            </div>
+          </div>
           <button class="refresh-btn" onclick="loadWhatsapp()">↻ Refresh</button>
         </div>
       </div>
@@ -604,7 +705,7 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Time</th>
+              <th class="wa-sort-th" onclick="toggleWaSort()">Time <i class="sort-icon" id="wa-sort-icon">↕</i></th>
               <th>Type</th>
               <th>Phone</th>
               <th>Status</th>
@@ -822,19 +923,30 @@
   }
 
   // ── WhatsApp controls ─────────────────────────────────────────────────────
-  function setWaFilter(filter, btn) {
+  function toggleWaDropdown(e) {
+    e.stopPropagation();
+    document.getElementById('wa-dropdown').classList.toggle('open');
+  }
+
+  function setWaFilter(filter, item) {
     waFilter = filter;
-    document.querySelectorAll('[id^="wa-filter-"]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.wa-dropdown-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('wa-filter-label').textContent = item.textContent.trim();
+    document.getElementById('wa-filter-btn').classList.toggle('filtered', filter !== 'all');
+    document.getElementById('wa-dropdown').classList.remove('open');
     loadWhatsapp();
   }
 
   function toggleWaSort() {
     waSort = waSort === 'desc' ? 'asc' : 'desc';
-    const btn = document.getElementById('wa-sort-btn');
-    btn.textContent = waSort === 'desc' ? '↓ Newest first' : '↑ Oldest first';
+    document.getElementById('wa-sort-icon').textContent = waSort === 'desc' ? '↓' : '↑';
     loadWhatsapp();
   }
+
+  document.addEventListener('click', () => {
+    document.getElementById('wa-dropdown')?.classList.remove('open');
+  });
 
   // ── WhatsApp ──────────────────────────────────────────────────────────────
   async function loadWhatsapp() {
