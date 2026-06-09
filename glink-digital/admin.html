@@ -564,6 +564,26 @@
     .wa-failed   { background: rgba(239,68,68,0.12); color: #ef4444; }
     .wa-incoming { background: rgba(167,139,250,0.12); color: #a78bfa; }
 
+    /* Expandable detail cell */
+    .wa-detail-cell {
+      font-size: 0.8rem;
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .wa-detail-cell:hover { background: rgba(255,255,255,0.04); }
+    .wa-detail-cell.expanded {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow: visible;
+      text-overflow: clip;
+      max-width: 400px;
+    }
+
     /* Responsive */
     @media (max-width: 900px) {
       .admin-main { padding: 16px; }
@@ -980,7 +1000,7 @@
             <td><span class="wa-badge ${badgeClass}">${badgeLabel}</span></td>
             <td class="td-muted">${phone}</td>
             <td class="td-muted" style="font-size:0.78rem">${isStatus ? (m.status || '—') : m.event_type}</td>
-            <td class="td-muted" style="font-size:0.8rem;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${detail}</td>
+            <td class="td-muted wa-detail-cell" onclick="this.classList.toggle('expanded')" title="Click to expand">${detail}</td>
           </tr>`;
       }).join('');
     } catch {

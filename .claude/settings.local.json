@@ -12,7 +12,21 @@
       "WebFetch(domain:www.googleapis.com)",
       "Bash(npx lighthouse *)",
       "Bash(node -e ' *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(sqlite3 *)",
+      "Bash(awk -F',' 'NR>1 && $3!=\"\" && $3!=\"\\\\\"\\\\\"\" {print NR\": \"$3}' \"C:\\\\Ecole Polytechnique\\\\Work\\\\EAi\\\\priority_leads.csv\")",
+      "Bash(python wa_campaign_sender.py --dry-run --rebuild)",
+      "Bash(python outreach_engine/generate_real_estate_messages.py)",
+      "Bash(python -c ' *)",
+      "Bash(node server.js)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000__TRACKED_VAR__)",
+      "Bash(DATABASE_URL='postgres://x:x@localhost/x' node server.js)",
+      "Bash(python -m http.server 8765)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8765__TRACKED_VAR__)",
+      "Bash(curl -s \"http://localhost:8765/learn/ai-basics.html\")",
+      "Bash(powershell -Command 'Get-NetTCPConnection -LocalPort 8765 -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force }')",
+      "WebFetch(domain:medical-website-prototype.vercel.app)",
+      "WebFetch(domain:real-estate-website-prototype.vercel.app)"
     ]
   }
 }

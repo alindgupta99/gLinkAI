@@ -1342,6 +1342,8 @@
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#industries">Industries</a></li>
+    <li><a href="#our-work">Our Work</a></li>
+    <li><a href="/learn/ai-basics">Learn AI</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#pricing">Get Started</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -1376,7 +1378,7 @@
 
       <div class="hero-btns">
         <a href="#contact" class="btn-primary">Start Your Project ✦</a>
-        <a href="#services" class="btn-secondary">Explore Services →</a>
+        <a href="#our-work" class="btn-secondary">See Our Work →</a>
       </div>
     </div>
 
@@ -1665,6 +1667,158 @@
       </div>
     </div>
   </div>
+</section>
+
+<!-- OUR WORK / RECENT BUILDS -->
+<style>
+  .our-work {
+    padding: 100px 6%;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .our-work .section-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 50px;
+  }
+  .our-work h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin-bottom: 14px;
+  }
+  .our-work h2 .gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .our-work .section-header p {
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .work-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .work-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(108,99,255,0.45);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+  }
+  .work-card .thumb {
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .work-card .thumb::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(13,15,30,0) 55%, rgba(13,15,30,0.9) 100%);
+  }
+  .work-card .industry-tag {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: rgba(5,6,15,0.78);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 50px;
+    z-index: 2;
+  }
+  .work-card .body {
+    padding: 22px 24px 24px;
+  }
+  .work-card .body h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .work-card .body p {
+    color: var(--muted);
+    font-size: 0.93rem;
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+  .work-card .visit {
+    color: var(--accent2);
+    font-size: 0.88rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .work-card:hover .visit { color: #7df0ff; }
+  .our-work .work-foot {
+    text-align: center;
+    margin-top: 40px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .our-work .work-foot a {
+    color: var(--accent2);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .our-work .work-foot a:hover { text-decoration: underline; }
+</style>
+
+<section class="our-work" id="our-work">
+  <div class="section-header">
+    <h2>Recent <span class="gradient-text">work we've shipped</span></h2>
+    <p>Two live websites we built — open them, click around, see what your version could look like.</p>
+  </div>
+
+  <div class="work-grid">
+    <a class="work-card" href="https://medical-website-prototype.vercel.app/" target="_blank" rel="noopener">
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80')">
+        <span class="industry-tag">🩺 Healthcare</span>
+      </div>
+      <div class="body">
+        <h3>Dr. Arjun Mehta — Gastroenterologist</h3>
+        <p>Booking, WhatsApp consults &amp; UPI payments for an NCR / Meerut-based gastroenterologist. Mobile-first, SEO-ready, live in days.</p>
+        <span class="visit">Visit live site →</span>
+      </div>
+    </a>
+
+    <a class="work-card" href="https://real-estate-website-prototype.vercel.app/" target="_blank" rel="noopener">
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=1920&amp;q=85')">
+        <span class="industry-tag">🏠 Real Estate</span>
+      </div>
+      <div class="body">
+        <h3>Pratham Realty Group — Developer</h3>
+        <p>Project showcase, RERA listings &amp; enquiry capture for a developer with properties across Mumbai, Pune, Bengaluru &amp; Goa.</p>
+        <span class="visit">Visit live site →</span>
+      </div>
+    </a>
+  </div>
+
+  <p class="work-foot">
+    Want something like this for your business? <a href="#contact">Tell us about your work →</a>
+  </p>
 </section>
 
 <!-- AI POWER SECTION -->

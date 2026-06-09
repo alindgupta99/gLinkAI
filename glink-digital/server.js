@@ -77,7 +77,30 @@ app.get('/robots.txt', (_req, res) => {
   res.sendFile(path.join(__dirname, 'robots.txt'));
 });
 
-// ── Ensure DB is ready before any request (safe for serverless cold starts) ─
+// ── Admin: login / session / logout (no DB needed — register before dbReady) ─
+app.post('/api/admin/login', (req, res) => {
+  if (req.body.password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Wrong password.' });
+  }
+  res.cookie(COOKIE, makeToken(), {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 8 * 60 * 60 * 1000,
+  });
+  res.json({ ok: true });
+});
+
+app.get('/api/admin/session', (req, res) => {
+  res.json({ isAdmin: validToken(req.cookies[COOKIE]) });
+});
+
+app.post('/api/admin/logout', (req, res) => {
+  res.clearCookie(COOKIE);
+  res.json({ ok: true });
+});
+
+// ── Ensure DB is ready before any request that needs it ─────────────────────
 const dbReady = Promise.all([db.initDB(), db.initWhatsappTable()]).catch(err => {
   console.error('DB init failed:', err.message);
 });
@@ -100,31 +123,6 @@ app.post('/api/contacts', async (req, res) => {
     console.error('Insert error:', err.message);
     res.status(500).json({ error: 'Failed to save contact.' });
   }
-});
-
-// ── Admin: login ────────────────────────────────────────────────────────────
-app.post('/api/admin/login', (req, res) => {
-  if (req.body.password !== ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Wrong password.' });
-  }
-  res.cookie(COOKIE, makeToken(), {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 8 * 60 * 60 * 1000, // 8 hours
-  });
-  res.json({ ok: true });
-});
-
-// ── Admin: check session ────────────────────────────────────────────────────
-app.get('/api/admin/session', (req, res) => {
-  res.json({ isAdmin: validToken(req.cookies[COOKIE]) });
-});
-
-// ── Admin: logout ───────────────────────────────────────────────────────────
-app.post('/api/admin/logout', (req, res) => {
-  res.clearCookie(COOKIE);
-  res.json({ ok: true });
 });
 
 // ── Admin: get all contacts ─────────────────────────────────────────────────
@@ -220,6 +218,20 @@ app.get('/api/admin/whatsapp-messages', requireAdmin, async (req, res) => {
 app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
+
+// ── Clean-URL routes for SEO landing pages ──────────────────────────────────
+const SEO_PAGES = {
+  '/learn/ai-basics':         'learn/ai-basics.html',
+  '/industries/doctors':      'industries/doctors.html',
+  '/industries/real-estate':  'industries/real-estate.html',
+  '/industries/finance':      'industries/finance.html',
+};
+for (const [route, file] of Object.entries(SEO_PAGES)) {
+  app.get(route, (_req, res) => {
+    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    res.sendFile(path.join(__dirname, file));
+  });
+}
 
 // ── Serve main site ─────────────────────────────────────────────────────────
 app.get('/', (_req, res) => {

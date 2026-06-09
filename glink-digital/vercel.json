@@ -5,7 +5,7 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["*.html", "robots.txt", "sitemap.xml", "logos/*"]
+        "includeFiles": ["*.html", "robots.txt", "sitemap.xml", "logos/*", "learn/*", "industries/*", "styles/*"]
       }
     }
   ],
